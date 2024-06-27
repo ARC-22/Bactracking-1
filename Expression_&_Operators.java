@@ -1,7 +1,3 @@
-// Time Complexity : O(3^n)
-// Space Complexity : O(n)
-// Did this code successfully run on Leetcode : Yes
-// Any problem you faced while coding this : No
 class Solution {
     List<String> res;
     public List<String> addOperators(String num, int target) {
@@ -11,15 +7,15 @@ class Solution {
         }
 
         res = new ArrayList<>();
-        recurse(num, target, 0, 0, 0 , "");
+        recurse(num, target, 0, 0, 0 , new StringBuilder());
         return res;
     }
 
-    private void recurse(String num, int target, int index, long calc, long tail, String path){
+    private void recurse(String num, int target, int index, long calc, long tail, StringBuilder path){
         //base
         if(index == num.length()){
             if(target == calc){
-                res.add(path);
+                res.add(path.toString());
             }
         }
 
@@ -29,17 +25,29 @@ class Solution {
                 continue;
             }
             long curr = Long.parseLong(num.substring(index, i + 1));
+            int le = path.length();
 
             if(index == 0){
-                recurse(num, target, i+1, curr, curr, path+curr);
+                //recurse(num, target, i+1, curr, curr, path + curr);
+                recurse(num, target, i+1, curr, curr, path.append(curr));
+                path.setLength(le);
             }
             else{
                 // +
-                recurse(num, target, i+1, calc + curr, +curr, path + "+" + curr);
+                //recurse(num, target, i+1, calc + curr, +curr, path + "+" + curr);
+                recurse(num, target, i+1, calc + curr, +curr, path.append("+").append(curr));
+                //backtrack
+                path.setLength(le);
                 // -
-                recurse(num, target, i+1, calc - curr, -curr, path + "-" + curr);
+                //recurse(num, target, i+1, calc - curr, -curr, path + "-" + curr);
+                recurse(num, target, i+1, calc - curr, -curr, path.append("-").append(curr));
+                //backtrack
+                path.setLength(le);
                 // *
-                recurse(num, target, i+1, (calc - tail) + (tail * curr), (tail * curr) , path + "*" + curr);
+                //recurse(num, target, i+1, (calc - tail) + (tail * curr), (tail * curr) , path + "*" + curr);
+                recurse(num, target, i+1, (calc - tail) + (tail * curr), (tail * curr) , path.append("*").append(curr));
+                //backtrack
+                path.setLength(le);
             }
         }
     }
